@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #000000;
+  --surface-1: #1a1a1a;
+  --surface-2: #2a2a2a;
+  --text: #ffffff;
+  --text-muted: #888888;
+  --accent: #e63226;
+
+  --ring: color-mix(in oklab, var(--accent) 70%, white 0%);
+  --gridline: color-mix(in oklab, white 10%, transparent);
+  --hairline: color-mix(in oklab, white 14%, transparent);
+
+  --noise-opacity: 0.06;
+  --glow-red: color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --font-sans: var(--font-display);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.02em;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 45%, transparent);
+  color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
+}
+
+/* Typography helpers */
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Arial, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.label {
+  font-size: 11px;
+  letter-spacing: clamp(0.14em, 0.18em, 0.22em);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.hud-line {
+  height: 1px;
+  background: var(--hairline);
+}
+
+/* Subtle overlays */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  opacity: var(--noise-opacity);
+  mix-blend-mode: overlay;
+  background-image:
+    radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.10) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 100%);
+  background-size: 180px 180px, 240px 240px, 200px 200px, 260px 260px;
+}
+
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(var(--gridline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gridline) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(circle at 50% 20%, black 0 55%, transparent 78%);
+}
+
+.diagonal-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  opacity: 0.14;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--hairline) 0px,
+    var(--hairline) 1px,
+    transparent 1px,
+    transparent 18px
+  );
+  mask-image: radial-gradient(circle at 50% 10%, black 0 45%, transparent 80%);
+}
+
+/* Marquee */
+@keyframes jf-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  background: color-mix(in oklab, var(--surface-1) 40%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: jf-marquee 28s linear infinite;
+  will-change: transform;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 18px 24px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Buttons / links */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid color-mix(in oklab, white 16%, transparent);
+  background: var(--text);
+  color: var(--bg);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: clamp(0.10em, 0.14em, 0.18em);
+  font-size: 11px;
+  line-height: 1.1;
+  max-width: 100%;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease,
+    color 150ms ease;
+}
+
+.btn-primary:hover {
+  background: color-mix(in oklab, var(--accent) 100%, white 0%);
+  border-color: color-mix(in oklab, var(--accent) 70%, transparent);
+  color: var(--text);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
