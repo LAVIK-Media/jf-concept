@@ -72,14 +72,18 @@ export function Hero() {
               hidden: { opacity: 0, y: 14 },
               show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
             }}
-            className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center"
+            className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5"
           >
             <a href="#kontakt" className="btn-primary w-full sm:w-auto">
               Jetzt starten <span aria-hidden="true">▶▶</span>
             </a>
-            <div className="flex items-center gap-5 rounded-xl border border-white/10 bg-white/5 px-5 py-3 sm:gap-6 sm:px-6">
+            <div
+              className="flex cursor-default select-none items-center gap-4 border-t border-white/10 pt-4 sm:border-t-0 sm:border-l sm:pl-5 sm:pt-0"
+              role="group"
+              aria-label="Markenzeichen und Standort Tirol"
+            >
               <ServiceIcons />
-              <span className="label whitespace-nowrap text-white/60">TIROL</span>
+              <span className="label whitespace-nowrap text-white/45">TIROL</span>
             </div>
           </motion.div>
         </motion.div>
