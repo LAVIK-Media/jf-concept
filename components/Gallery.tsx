@@ -230,11 +230,23 @@ export function Gallery() {
                 {/* Soft fade edges so the "frame" feels less harsh */}
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black via-black/80 to-transparent md:w-16"
+                  className={[
+                    "pointer-events-none absolute inset-y-0 left-0",
+                    "w-6 md:w-10",
+                    "bg-gradient-to-r from-black via-black/55 to-transparent",
+                    "transition-opacity duration-200",
+                    canScrollPrev ? "opacity-100" : "opacity-0",
+                  ].join(" ")}
                 />
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black via-black/80 to-transparent md:w-16"
+                  className={[
+                    "pointer-events-none absolute inset-y-0 right-0",
+                    "w-6 md:w-10",
+                    "bg-gradient-to-l from-black via-black/55 to-transparent",
+                    "transition-opacity duration-200",
+                    canScrollNext ? "opacity-100" : "opacity-0",
+                  ].join(" ")}
                 />
               </div>
             </Carousel>
