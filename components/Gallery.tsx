@@ -96,6 +96,49 @@ export function Gallery() {
   }, [carouselApi]);
 
   useEffect(() => {
+    if (!carouselApi) return;
+
+    // Enable "side scrolling" on desktop via wheel/trackpad.
+    // Embla already supports drag; this just maps vertical wheel intent to prev/next.
+    const isFinePointer =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(pointer: fine)").matches;
+    if (!isFinePointer) return;
+
+    const apiAny = carouselApi as unknown as {
+      rootNode?: () => HTMLElement;
+      viewportNode?: () => HTMLElement;
+    };
+
+    const target = apiAny.viewportNode?.() ?? apiAny.rootNode?.();
+    if (!target) return;
+
+    let last = 0;
+    const onWheel = (e: WheelEvent) => {
+      // Let users hold Shift for native horizontal scrolling elsewhere.
+      if (e.shiftKey) return;
+      if (e.defaultPrevented) return;
+
+      const intent = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (Math.abs(intent) < 6) return;
+
+      const now = performance.now();
+      if (now - last < 120) return;
+      last = now;
+
+      e.preventDefault();
+      if (intent > 0) carouselApi.scrollNext();
+      else carouselApi.scrollPrev();
+    };
+
+    target.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      target.removeEventListener("wheel", onWheel);
+    };
+  }, [carouselApi]);
+
+  useEffect(() => {
     // reset carousel when filter changes
     setCurrent(0);
     carouselApi?.scrollTo(0);
