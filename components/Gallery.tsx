@@ -231,8 +231,8 @@ export function Gallery() {
                 <div
                   aria-hidden="true"
                   className={[
-                    "pointer-events-none absolute inset-y-0 left-0",
-                    "w-6 md:w-10",
+                    "pointer-events-none absolute inset-y-0 -left-4 md:-left-8",
+                    "w-10 md:w-16",
                     "bg-gradient-to-r from-black via-black/55 to-transparent",
                     "transition-opacity duration-200",
                     canScrollPrev ? "opacity-100" : "opacity-0",
@@ -241,8 +241,8 @@ export function Gallery() {
                 <div
                   aria-hidden="true"
                   className={[
-                    "pointer-events-none absolute inset-y-0 right-0",
-                    "w-6 md:w-10",
+                    "pointer-events-none absolute inset-y-0 -right-4 md:-right-8",
+                    "w-10 md:w-16",
                     "bg-gradient-to-l from-black via-black/55 to-transparent",
                     "transition-opacity duration-200",
                     canScrollNext ? "opacity-100" : "opacity-0",
