@@ -96,49 +96,6 @@ export function Gallery() {
   }, [carouselApi]);
 
   useEffect(() => {
-    if (!carouselApi) return;
-
-    // Enable "side scrolling" on desktop via wheel/trackpad.
-    // Embla already supports drag; this just maps vertical wheel intent to prev/next.
-    const isFinePointer =
-      typeof window !== "undefined" &&
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(pointer: fine)").matches;
-    if (!isFinePointer) return;
-
-    const apiAny = carouselApi as unknown as {
-      rootNode?: () => HTMLElement;
-      viewportNode?: () => HTMLElement;
-    };
-
-    const target = apiAny.viewportNode?.() ?? apiAny.rootNode?.();
-    if (!target) return;
-
-    let last = 0;
-    const onWheel = (e: WheelEvent) => {
-      // Let users hold Shift for native horizontal scrolling elsewhere.
-      if (e.shiftKey) return;
-      if (e.defaultPrevented) return;
-
-      const intent = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      if (Math.abs(intent) < 6) return;
-
-      const now = performance.now();
-      if (now - last < 120) return;
-      last = now;
-
-      e.preventDefault();
-      if (intent > 0) carouselApi.scrollNext();
-      else carouselApi.scrollPrev();
-    };
-
-    target.addEventListener("wheel", onWheel, { passive: false });
-    return () => {
-      target.removeEventListener("wheel", onWheel);
-    };
-  }, [carouselApi]);
-
-  useEffect(() => {
     // reset carousel when filter changes
     setCurrent(0);
     carouselApi?.scrollTo(0);
@@ -219,55 +176,67 @@ export function Gallery() {
                 },
               }}
             >
-              <CarouselContent className="ml-0 md:ml-0">
-                {filtered.map((item) => (
-                  <CarouselItem
-                    key={item.id}
-                    className="max-w-[320px] pl-[14px] sm:max-w-[380px] lg:max-w-[420px]"
-                  >
-                    <a
-                      href="#kontakt"
-                      className="group block overflow-hidden rounded-2xl border border-white/10 bg-[color:var(--surface-1)]"
-                      aria-label={`Projekt: ${item.title}`}
+              <div className="relative">
+                <CarouselContent className="ml-0 md:ml-0">
+                  {filtered.map((item) => (
+                    <CarouselItem
+                      key={item.id}
+                      className="max-w-[320px] pl-[14px] sm:max-w-[380px] lg:max-w-[420px]"
                     >
-                      <div className="relative aspect-square w-full overflow-hidden">
-                        {item.src ? (
-                          <Image
-                            src={item.src}
-                            alt={item.title}
-                            fill
-                            sizes="(max-width: 1024px) 70vw, 420px"
-                            className="object-cover opacity-90 transition duration-300 group-hover:scale-[1.03] group-hover:opacity-100"
-                          />
-                        ) : (
-                          <div className="absolute inset-0 bg-[color:var(--surface-2)]" />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
-                      </div>
-
-                      <div className="p-6">
-                        <p className="label text-white/60">{item.meta}</p>
-                        <p className="mt-3 font-display text-2xl uppercase tracking-[0.03em] text-white">
-                          {item.title}
-                        </p>
-                        <p className="mt-4 text-[13px] leading-6 text-white/60">
-                          Saubere Kanten, klare Linien, technische Umsetzung — der Unterschied
-                          liegt im Detail.
-                        </p>
-
-                        <div className="mt-6 flex items-center justify-between">
-                          <span className="label text-white/70">Mehr ansehen</span>
-                          <span className="label text-white/70">
-                            ▶▶ <span className="text-white/40">JF</span>
-                          </span>
+                      <a
+                        href="#kontakt"
+                        className="group block overflow-hidden rounded-2xl border border-white/10 bg-[color:var(--surface-1)]"
+                        aria-label={`Projekt: ${item.title}`}
+                      >
+                        <div className="relative aspect-square w-full overflow-hidden">
+                          {item.src ? (
+                            <Image
+                              src={item.src}
+                              alt={item.title}
+                              fill
+                              sizes="(max-width: 1024px) 70vw, 420px"
+                              className="object-cover opacity-90 transition duration-300 group-hover:scale-[1.03] group-hover:opacity-100"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-[color:var(--surface-2)]" />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
                         </div>
-                      </div>
 
-                      <span className="pointer-events-none block h-[2px] origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-300 group-hover:scale-x-100" />
-                    </a>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
+                        <div className="p-6">
+                          <p className="label text-white/60">{item.meta}</p>
+                          <p className="mt-3 font-display text-2xl uppercase tracking-[0.03em] text-white">
+                            {item.title}
+                          </p>
+                          <p className="mt-4 text-[13px] leading-6 text-white/60">
+                            Saubere Kanten, klare Linien, technische Umsetzung — der Unterschied
+                            liegt im Detail.
+                          </p>
+
+                          <div className="mt-6 flex items-center justify-between">
+                            <span className="label text-white/70">Mehr ansehen</span>
+                            <span className="label text-white/70">
+                              ▶▶ <span className="text-white/40">JF</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="pointer-events-none block h-[2px] origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-300 group-hover:scale-x-100" />
+                      </a>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+
+                {/* Soft fade edges so the "frame" feels less harsh */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black via-black/80 to-transparent md:w-16"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black via-black/80 to-transparent md:w-16"
+                />
+              </div>
             </Carousel>
 
             <div className="mt-8 flex items-center justify-center gap-2">
